@@ -45,4 +45,5 @@ publish:
     - if: $CI_COMMIT_BRANCH == "main"
       when: always
   script:
+    - echo $NUGET_USERNAME
     - dotnet nuget push $APPLICATION_PROJECT_NAME.APPLICATION_NUGET_VERSION.nupkg --source $NUGET_URL --api-key $NUGET_PASSWORD --skip-duplicate
