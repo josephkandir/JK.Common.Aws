@@ -25,6 +25,7 @@ variables:
 pre_build:
   stage: pre_build
   script:
+    - echo $NUGET_USERNAME
     - dotnet nuget add source $NUGET_URL --username $NUGET_USERNAME --password $NUGET_PASSWORD --store-password-in-clear-text
 
 build:
@@ -34,6 +35,7 @@ build:
       when: always
   script:
     - echo 'building'
+    - echo $NUGET_USERNAME
     - dotnet publish -c release -o ./Build $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj
     - dotnet pack $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj -c release --include-source --include-symbols -o ./Build
     - cd Build
@@ -45,5 +47,4 @@ publish:
     - if: $CI_COMMIT_BRANCH == "main"
       when: always
   script:
-    - echo $NUGET_USERNAME
-    - dotnet nuget push $APPLICATION_PROJECT_NAME.APPLICATION_NUGET_VERSION.nupkg --source $NUGET_URL --api-key $NUGET_PASSWORD --skip-duplicate
+    - dotnet nuget push $APPLICATION_PROJECT_NAME.$APPLICATION_NUGET_VERSION.nupkg --source $NUGET_URL --api-key $NUGET_PASSWORD --skip-duplicate
