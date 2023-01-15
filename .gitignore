@@ -29,3 +29,5 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
+/.vs/JK.Common.Aws/FileContentIndex
+/.vs/JK.Common.Aws/DesignTimeBuild
