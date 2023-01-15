@@ -8,8 +8,8 @@ variables:
   NUGET_PASSWORD: $NUGET_PASSWORD
   NUGET_URL: $NUGET_URL
 
-  APPLICATION_VERSION: '1.2.6'
-  APPLICATION_FOLDER: 'src/JK.Common.Aws.Authentication'
+  APPLICATION_NUGET_VERSION: '1.2.6'
+  APPLICATION_PROJECT_FOLDER: 'src/JK.Common.Aws.Authentication'
   APPLICATION_PROJECT_NAME: 'JK.Common.Aws.Authentication'
 
   # 1) Name of directory where restore and build objects are stored.
@@ -30,6 +30,7 @@ pre_build:
     - dotnet --version
     - echo $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj
     - dotnet publish -c release -o Build $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj
+    - dir
     - dotnet pack $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj -c release --include-source --include-symbols -o Build
     - cd Build
     - ls
