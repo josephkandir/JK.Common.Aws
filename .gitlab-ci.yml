@@ -1,0 +1,48 @@
+image: mcr.microsoft.com/dotnet/sdk:6.0
+
+stages:
+  - pre_build
+  - build
+  - publish
+
+variables:
+  NUGET_USERNAME: $NUGET_USERNAME
+  NUGET_PASSWORD: $NUGET_PASSWORD
+  NUGET_URL: $NUGET_URL
+
+  APPLICATION_VERSION: '1.0.2'
+  APPLICATION_FOLDER: 'src/JK.Common.Aws.Authentication'
+  APPLICATION_PROJECT_NAME: 'JK.Common.Aws.Authentication'
+
+  # 1) Name of directory where restore and build objects are stored.
+  OBJECTS_DIRECTORY: 'obj'
+  # 2) Name of directory used for keeping restored dependencies.
+  NUGET_PACKAGES_DIRECTORY: '.nuget'
+  # 3) A relative path to the source code from project repository root.
+  # NOTE: Please edit this path so it matches the structure of your project!
+  SOURCE_CODE_PATH: '*/*/'
+
+pre_build:
+  stage: pre_build
+  script:
+    - dotnet nuget add source $NUGET_URL --username $NUGET_USERNAME --password $NUGET_PASSWORD --store-password-in-clear-text
+
+build:
+  stage: build
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: always
+  script:
+    - echo 'building'
+    - dotnet publish -c release -o ./Build $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj
+    - dotnet pack $APPLICATION_PROJECT_FOLDER/$APPLICATION_PROJECT_NAME.csproj -c release --include-source --include-symbols -o ./Build
+    - cd Build
+    - ls
+
+publish:
+  stage: publish
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      when: always
+  script:
+    - dotnet nuget push $APPLICATION_PROJECT_NAME.APPLICATION_NUGET_VERSION.nupkg --source $NUGET_URL --api-key $NUGET_PASSWORD --skip-duplicate
