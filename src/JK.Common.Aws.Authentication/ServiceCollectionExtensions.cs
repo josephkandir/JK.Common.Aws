@@ -40,7 +40,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
-    public static void AddAWSAuthVer2(this IServiceCollection services, ConfigurationManager configuration)
+    public static void AddAWSAuthVer2(this IServiceCollection services)
     {
         string appClientId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_APP_CLIENT_ID)!;
         string region = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_REGION)!;
@@ -65,6 +65,6 @@ public static class ServiceCollectionExtensions
             });
 
         services.AddHttpContextAccessor();
-        services.AddScoped<ICognitoManager, CognitoManager>();
+        services.AddScoped<ICognitoManager, v2.CognitoManager>();
     }
 }

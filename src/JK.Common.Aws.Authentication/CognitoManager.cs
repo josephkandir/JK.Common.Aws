@@ -5,7 +5,6 @@ using JK.Common.Aws.Authentication.Enums;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using JkCommonModel = JK.Common.Aws.Authentication.Contracts;
-using AwsModel = Amazon.CognitoIdentityProvider.Model;
 
 namespace JK.Common.Aws.Authentication;
 
@@ -15,12 +14,10 @@ public class CognitoManager : BaseCognitoManager, ICognitoManager
 
     public async Task<ConfirmForgotPasswordResponse> ConfirmForgotPasswordAsync(ConfirmPasswordForgotRequest request)
     {
-		string clientId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_APP_CLIENT_ID)!.Trim();
-
 		var res = new ConfirmForgotPasswordRequest
 		{
 			Username = request.Username,
-			ClientId = string.IsNullOrEmpty(clientId) ? _awsOptions.AppClientId : clientId,
+			ClientId = _awsOptions.AppClientId,
 			ConfirmationCode = request.ConfirmationCode,
 			Password = request.Password
 		};
@@ -30,11 +27,9 @@ public class CognitoManager : BaseCognitoManager, ICognitoManager
 
     public async Task<ForgotPasswordResponse> ForgotPasswordAsync(PasswordForgotRequest request)
     {
-        string clientId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_APP_CLIENT_ID)!.Trim();
-
         var res = new ForgotPasswordRequest
         {
-            ClientId = string.IsNullOrEmpty(clientId) ? _awsOptions.AppClientId : clientId,
+            ClientId = _awsOptions.AppClientId,
             Username = request.Username
         };
         ForgotPasswordResponse response = await _cognito.ForgotPasswordAsync(res);
@@ -59,7 +54,7 @@ public class CognitoManager : BaseCognitoManager, ICognitoManager
 	{
 		var accessToken = _httpContext!.Request.Headers[HeaderConstant.ACCESS_TOKEN];
 
-		AwsModel.ChangePasswordRequest changePasswordRequest = new AwsModel.ChangePasswordRequest
+		ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest
 		{
 			AccessToken = accessToken,
 			PreviousPassword = request.CurrentPassword,
