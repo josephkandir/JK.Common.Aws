@@ -13,7 +13,35 @@ public class CognitoManager : BaseCognitoManager, ICognitoManager
 {
 	public CognitoManager(IOptions<AwsOptions> configuration, IHttpContextAccessor httpContextAccessor) : base(configuration, httpContextAccessor) { }
 
-	public async Task<AuthenticationResultType> SignInAsync(LoginRequest request)
+    public async Task<ConfirmForgotPasswordResponse> ConfirmForgotPasswordAsync(ConfirmPasswordForgotRequest request)
+    {
+		string clientId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_APP_CLIENT_ID)!.Trim();
+
+		var res = new ConfirmForgotPasswordRequest
+		{
+			Username = request.Username,
+			ClientId = string.IsNullOrEmpty(clientId) ? _awsOptions.AppClientId : clientId,
+			ConfirmationCode = request.ConfirmationCode,
+			Password = request.Password
+		};
+        ConfirmForgotPasswordResponse response = await _cognito.ConfirmForgotPasswordAsync(res);
+		return response;
+    }
+
+    public async Task<ForgotPasswordResponse> ForgotPasswordAsync(PasswordForgotRequest request)
+    {
+        string clientId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_APP_CLIENT_ID)!.Trim();
+
+        var res = new ForgotPasswordRequest
+        {
+            ClientId = string.IsNullOrEmpty(clientId) ? _awsOptions.AppClientId : clientId,
+            Username = request.Username
+        };
+        ForgotPasswordResponse response = await _cognito.ForgotPasswordAsync(res);
+		return response;
+    }
+
+    public async Task<AuthenticationResultType> SignInAsync(LoginRequest request)
 	{
 		AuthenticationResultType response = await AuthenticateUserAsync(request, AuthRequestType.Admin);
 
@@ -27,7 +55,7 @@ public class CognitoManager : BaseCognitoManager, ICognitoManager
 		return response;
 	}
 
-	public async Task<BaseResponse> TryChangePasswordAsync(JkCommonModel.ChangePasswordRequest request)
+	public async Task<BaseResponse> TryChangePasswordAsync(JkCommonModel.PasswordChangeRequest request)
 	{
 		var accessToken = _httpContext!.Request.Headers[HeaderConstant.ACCESS_TOKEN];
 
