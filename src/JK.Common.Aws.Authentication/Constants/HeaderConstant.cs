@@ -4,6 +4,6 @@ public static class HeaderConstant
 {
 	public const string AUTHORIZATION = "Authorization";
 	public const string ACCESS_TOKEN = "AccessToken";
-	public const string REFRESH_TOKEN = "RefreshToken";
+    public const string REFRESH_TOKEN = "RefreshToken";
+    public const string ID_TOKEN = "IdToken";
 }
-

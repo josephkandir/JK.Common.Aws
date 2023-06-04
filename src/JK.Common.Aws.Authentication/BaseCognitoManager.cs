@@ -11,7 +11,7 @@ namespace JK.Common.Aws.Authentication;
 public class BaseCognitoManager
 {
 	protected readonly AwsOptions _awsOptions;
-	protected readonly AmazonCognitoIdentityProviderClient _cognito;
+	protected AmazonCognitoIdentityProviderClient _cognito;
 	protected readonly HttpContext? _httpContext;
 
 	protected BaseCognitoManager(IOptions<AwsOptions> configuration, IHttpContextAccessor httpContextAccessor)
