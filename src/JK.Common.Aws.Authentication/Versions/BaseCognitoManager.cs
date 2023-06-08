@@ -1,11 +1,11 @@
 ﻿using Amazon;
 using Amazon.CognitoIdentityProvider;
 using Amazon.CognitoIdentityProvider.Model;
+using Amazon.Runtime;
 using JK.Common.Aws.Authentication.Constants;
 using JK.Common.Aws.Authentication.Contracts;
 using JK.Common.Aws.Authentication.Enums;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http;
 
 namespace JK.Common.Aws.Authentication.v2;
 
@@ -14,13 +14,16 @@ public class BaseCognitoManager
     protected readonly string region = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_REGION)!;
     protected readonly string clientId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_APP_CLIENT_ID)!;
     protected readonly string userPoolId = Environment.GetEnvironmentVariable(AwsConstant.COGNITO_USER_POOL_ID)!;
+    protected readonly string key = Environment.GetEnvironmentVariable(AwsConstant.AWS_ACCESS_KEY)!;
+    protected readonly string signature = Environment.GetEnvironmentVariable(AwsConstant.AWS_SIGNATURE)!;
 
     protected AmazonCognitoIdentityProviderClient _cognito;
     protected readonly HttpContext? _httpContext;
 
     protected BaseCognitoManager(IHttpContextAccessor httpContextAccessor)
     {
-        _cognito = new AmazonCognitoIdentityProviderClient(RegionEndpoint.GetBySystemName(region));
+        var credentials = new BasicAWSCredentials(key, signature);
+        _cognito = new AmazonCognitoIdentityProviderClient(credentials, RegionEndpoint.GetBySystemName(region));
         _httpContext = httpContextAccessor.HttpContext;
     }
 
