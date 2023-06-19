@@ -36,6 +36,31 @@ public class CognitoManager : BaseCognitoManager, ICognitoManager
         return response;
     }
 
+    public async Task<List<UserType>> ListUsersAsync()
+    {
+        var request = new ListUsersRequest
+        {
+            UserPoolId = userPoolId
+        };
+
+        var users = new List<UserType>();
+
+        var usersPaginator = _cognito.Paginators.ListUsers(request);
+        await foreach (var response in usersPaginator.Responses)
+        {
+            users.AddRange(response.Users);
+        }
+
+        return users;
+    }
+
+    public async Task<AuthenticationResultType> RefreshTokenAsync(RefreshTokenRequest request)
+    {
+        AuthenticationResultType response = await RefreshTokenReponse(request);
+
+        return response;
+    }
+
     public async Task<AuthenticationResultType> SignInAsync(LoginRequest request)
     {
         AuthenticationResultType response = await AuthenticateUserAsync(request, AuthRequestType.Admin);

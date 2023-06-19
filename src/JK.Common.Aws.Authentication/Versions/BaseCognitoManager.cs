@@ -66,5 +66,20 @@ public class BaseCognitoManager
         var response = initiateAuthResponse.AuthenticationResult;
         return response;
     }
+
+    protected async Task<AuthenticationResultType> RefreshTokenReponse(RefreshTokenRequest tokenRequest)
+    {
+        var request = new InitiateAuthRequest
+        {
+            ClientId = clientId,
+            AuthFlow = AuthFlowType.REFRESH_TOKEN_AUTH
+        };
+
+        request.AuthParameters.Add("REFRESH_TOKEN", tokenRequest.RefreshToken);
+
+        var initiateAuthResponse = await _cognito.InitiateAuthAsync(request);
+        var response = initiateAuthResponse.AuthenticationResult;
+        return response;
+    }
 }
 
