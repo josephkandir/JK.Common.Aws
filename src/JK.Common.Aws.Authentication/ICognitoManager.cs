@@ -10,4 +10,6 @@ public interface ICognitoManager
 	Task<BaseResponse> TryChangePasswordAsync(PasswordChangeRequest request);
     Task<ForgotPasswordResponse> ForgotPasswordAsync(PasswordForgotRequest request);
     Task<ConfirmForgotPasswordResponse> ConfirmForgotPasswordAsync(ConfirmPasswordForgotRequest request);
+	Task<List<UserType>> ListUsersAsync();
+    Task<AuthenticationResultType> RefreshTokenAsync(RefreshTokenRequest request);
 }
